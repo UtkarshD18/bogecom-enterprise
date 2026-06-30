@@ -8,11 +8,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, builder = @org.mapstruct.Builder(disableBuilder = true))
+@Mapper(
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    builder = @org.mapstruct.Builder(disableBuilder = true))
 public interface CartMapper {
 
-    CartDto toDto(Cart cart);
+  CartDto toDto(Cart cart);
 
-    @Mapping(source = "cart.id", target = "cartId")
-    CartItemDto toDto(CartItem cartItem);
+  @Mapping(source = "cart.id", target = "cartId")
+  CartItemDto toDto(CartItem cartItem);
 }

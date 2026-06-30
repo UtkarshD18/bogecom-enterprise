@@ -24,61 +24,60 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CartController {
 
-    private final CartService cartService;
+  private final CartService cartService;
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<CartDto>> getCart(
-            @AuthenticationPrincipal Long userId,
-            @RequestParam(required = false) String sessionId) {
-        
-        return ResponseEntity.ok(ApiResponse.success(cartService.getCart(userId, sessionId)));
+  @GetMapping
+  public ResponseEntity<ApiResponse<CartDto>> getCart(
+      @AuthenticationPrincipal Long userId, @RequestParam(required = false) String sessionId) {
+
+    return ResponseEntity.ok(ApiResponse.success(cartService.getCart(userId, sessionId)));
+  }
+
+  @PostMapping("/items")
+  public ResponseEntity<ApiResponse<CartDto>> addToCart(
+      @AuthenticationPrincipal Long userId, @Valid @RequestBody AddToCartRequest request) {
+
+    return ResponseEntity.ok(ApiResponse.success(cartService.addToCart(userId, request)));
+  }
+
+  @PutMapping("/items/{itemId}")
+  public ResponseEntity<ApiResponse<CartDto>> updateCartItem(
+      @AuthenticationPrincipal Long userId,
+      @PathVariable Long itemId,
+      @Valid @RequestBody UpdateCartItemRequest request) {
+
+    return ResponseEntity.ok(
+        ApiResponse.success(cartService.updateCartItem(userId, itemId, request)));
+  }
+
+  @DeleteMapping("/items/{itemId}")
+  public ResponseEntity<ApiResponse<CartDto>> removeCartItem(
+      @AuthenticationPrincipal Long userId,
+      @PathVariable Long itemId,
+      @RequestParam(required = false) String sessionId) {
+
+    return ResponseEntity.ok(
+        ApiResponse.success(cartService.removeCartItem(userId, sessionId, itemId)));
+  }
+
+  @DeleteMapping
+  public ResponseEntity<ApiResponse<Void>> clearCart(
+      @AuthenticationPrincipal Long userId, @RequestParam(required = false) String sessionId) {
+
+    cartService.clearCart(userId, sessionId);
+    return ResponseEntity.ok(ApiResponse.success(null));
+  }
+
+  @PostMapping("/merge")
+  public ResponseEntity<ApiResponse<Void>> mergeCart(
+      @AuthenticationPrincipal Long userId, @RequestParam String sessionId) {
+
+    if (userId == null) {
+      return ResponseEntity.badRequest()
+          .body(ApiResponse.error("User must be logged in to merge carts"));
     }
 
-    @PostMapping("/items")
-    public ResponseEntity<ApiResponse<CartDto>> addToCart(
-            @AuthenticationPrincipal Long userId,
-            @Valid @RequestBody AddToCartRequest request) {
-        
-        return ResponseEntity.ok(ApiResponse.success(cartService.addToCart(userId, request)));
-    }
-
-    @PutMapping("/items/{itemId}")
-    public ResponseEntity<ApiResponse<CartDto>> updateCartItem(
-            @AuthenticationPrincipal Long userId,
-            @PathVariable Long itemId,
-            @Valid @RequestBody UpdateCartItemRequest request) {
-        
-        return ResponseEntity.ok(ApiResponse.success(cartService.updateCartItem(userId, itemId, request)));
-    }
-
-    @DeleteMapping("/items/{itemId}")
-    public ResponseEntity<ApiResponse<CartDto>> removeCartItem(
-            @AuthenticationPrincipal Long userId,
-            @PathVariable Long itemId,
-            @RequestParam(required = false) String sessionId) {
-        
-        return ResponseEntity.ok(ApiResponse.success(cartService.removeCartItem(userId, sessionId, itemId)));
-    }
-
-    @DeleteMapping
-    public ResponseEntity<ApiResponse<Void>> clearCart(
-            @AuthenticationPrincipal Long userId,
-            @RequestParam(required = false) String sessionId) {
-        
-        cartService.clearCart(userId, sessionId);
-        return ResponseEntity.ok(ApiResponse.success(null));
-    }
-
-    @PostMapping("/merge")
-    public ResponseEntity<ApiResponse<Void>> mergeCart(
-            @AuthenticationPrincipal Long userId,
-            @RequestParam String sessionId) {
-        
-        if (userId == null) {
-            return ResponseEntity.badRequest().body(ApiResponse.error("User must be logged in to merge carts"));
-        }
-        
-        cartService.mergeGuestCartWithUserCart(userId, sessionId);
-        return ResponseEntity.ok(ApiResponse.success(null));
-    }
+    cartService.mergeGuestCartWithUserCart(userId, sessionId);
+    return ResponseEntity.ok(ApiResponse.success(null));
+  }
 }

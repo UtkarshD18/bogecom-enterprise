@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="013-create-orders" author="system">
+        <createTable tableName="orders">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_amount" type="DECIMAL(12, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="shipping_address_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="billing_address_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- BaseEntity Columns -->
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="updated_by" type="VARCHAR(255)"/>
+            <column name="is_deleted" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted_at" type="TIMESTAMP"/>
+            <column name="deleted_by" type="VARCHAR(255)"/>
+            <column name="version" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+
+        <createIndex tableName="orders" indexName="idx_orders_user_id">
+            <column name="user_id"/>
+        </createIndex>
+        
+        <!-- Intentionally not adding strict FK to addresses yet to support cross-module decoupling
+             But in a strict schema, you could:
+             <addForeignKeyConstraint baseTableName="orders" baseColumnNames="user_id" constraintName="fk_orders_user_id" referencedTableName="users" referencedColumnNames="id"/>
+        -->
+    </changeSet>
+
+</databaseChangeLog>

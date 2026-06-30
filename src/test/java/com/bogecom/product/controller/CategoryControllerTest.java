@@ -28,46 +28,49 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc(addFilters = false)
 class CategoryControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-    @MockBean
-    private CategoryService categoryService;
+  @MockBean private CategoryService categoryService;
 
-    @MockBean
-    private JwtTokenProvider jwtTokenProvider;
+  @MockBean private JwtTokenProvider jwtTokenProvider;
 
-    @Test
-    void getCategoryTree_ReturnsList() throws Exception {
-        CategoryDto response = new CategoryDto(1L, "Electronics", "electronics", "Desc", null, true, List.of());
+  @Test
+  void getCategoryTree_ReturnsList() throws Exception {
+    CategoryDto response =
+        new CategoryDto(1L, "Electronics", "electronics", "Desc", null, true, List.of());
 
-        when(categoryService.getCategoryTree()).thenReturn(List.of(response));
+    when(categoryService.getCategoryTree()).thenReturn(List.of(response));
 
-        mockMvc.perform(get("/api/v1/categories/tree"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data[0].slug").value("electronics"));
-    }
+    mockMvc
+        .perform(get("/api/v1/categories/tree"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.data[0].slug").value("electronics"));
+  }
 
-    @Test
-    void createCategory_AsAdmin_ReturnsCreatedCategory() throws Exception {
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(1L, null, List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
-        
-        CreateCategoryRequest request = new CreateCategoryRequest("Electronics", "Desc", null);
-                
-        CategoryDto response = new CategoryDto(1L, "Electronics", "electronics", "Desc", null, true, List.of());
+  @Test
+  void createCategory_AsAdmin_ReturnsCreatedCategory() throws Exception {
+    UsernamePasswordAuthenticationToken auth =
+        new UsernamePasswordAuthenticationToken(
+            1L, null, List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
 
-        when(categoryService.createCategory(any(CreateCategoryRequest.class))).thenReturn(response);
+    CreateCategoryRequest request = new CreateCategoryRequest("Electronics", "Desc", null);
 
-        mockMvc.perform(post("/api/v1/categories")
+    CategoryDto response =
+        new CategoryDto(1L, "Electronics", "electronics", "Desc", null, true, List.of());
+
+    when(categoryService.createCategory(any(CreateCategoryRequest.class))).thenReturn(response);
+
+    mockMvc
+        .perform(
+            post("/api/v1/categories")
                 .with(authentication(auth))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.id").value(1L));
-    }
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.data.id").value(1L));
+  }
 }

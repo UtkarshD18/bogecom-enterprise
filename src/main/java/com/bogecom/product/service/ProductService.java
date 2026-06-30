@@ -23,89 +23,90 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ProductService {
 
-    private final ProductRepository productRepository;
-    private final ProductMapper productMapper;
+  private final ProductRepository productRepository;
+  private final ProductMapper productMapper;
 
-    @Transactional(readOnly = true)
-    public Page<ProductDto> getProducts(ProductSearchCriteria criteria, Pageable pageable) {
-        Page<Product> productPage = productRepository.findAll(
-                ProductSpecification.withCriteria(criteria), pageable);
-        return productPage.map(productMapper::toDto);
+  @Transactional(readOnly = true)
+  public Page<ProductDto> getProducts(ProductSearchCriteria criteria, Pageable pageable) {
+    Page<Product> productPage =
+        productRepository.findAll(ProductSpecification.withCriteria(criteria), pageable);
+    return productPage.map(productMapper::toDto);
+  }
+
+  @Transactional(readOnly = true)
+  public ProductDto getProductBySlug(String slug) {
+    return productMapper.toDto(getProductEntityBySlug(slug));
+  }
+
+  @Transactional(readOnly = true)
+  public ProductDto getProductById(Long id) {
+    return productMapper.toDto(getProductEntityById(id));
+  }
+
+  @Transactional
+  public ProductDto createProduct(CreateProductRequest request) {
+    if (productRepository.existsBySkuAndIsDeletedFalse(request.sku())) {
+      throw new BusinessException("Product SKU already exists", HttpStatus.CONFLICT);
     }
 
-    @Transactional(readOnly = true)
-    public ProductDto getProductBySlug(String slug) {
-        return productMapper.toDto(getProductEntityBySlug(slug));
+    String slug = generateSlug(request.name());
+    if (productRepository.existsBySlugAndIsDeletedFalse(slug)) {
+      slug = slug + "-" + System.currentTimeMillis();
     }
 
-    @Transactional(readOnly = true)
-    public ProductDto getProductById(Long id) {
-        return productMapper.toDto(getProductEntityById(id));
+    Product product = productMapper.toEntity(request);
+    product.setSlug(slug);
+
+    if (request.images() != null && !request.images().isEmpty()) {
+      for (var imgDto : request.images()) {
+        product.addImage(productMapper.toEntity(imgDto));
+      }
     }
 
-    @Transactional
-    public ProductDto createProduct(CreateProductRequest request) {
-        if (productRepository.existsBySkuAndIsDeletedFalse(request.sku())) {
-            throw new BusinessException("Product SKU already exists", HttpStatus.CONFLICT);
-        }
+    product = productRepository.save(product);
+    log.info("Product created with SKU: {}", product.getSku());
+    return productMapper.toDto(product);
+  }
 
-        String slug = generateSlug(request.name());
-        if (productRepository.existsBySlugAndIsDeletedFalse(slug)) {
-            slug = slug + "-" + System.currentTimeMillis();
-        }
+  @Transactional
+  public ProductDto updateProduct(Long id, UpdateProductRequest request) {
+    Product product = getProductEntityById(id);
 
-        Product product = productMapper.toEntity(request);
-        product.setSlug(slug);
+    productMapper.updateEntityFromDto(request, product);
 
-        if (request.images() != null && !request.images().isEmpty()) {
-            for (var imgDto : request.images()) {
-                product.addImage(productMapper.toEntity(imgDto));
-            }
-        }
+    // If name changes, we could optionally update the slug, but usually slugs should remain stable
+    // for SEO.
+    // For now, we leave the slug unchanged during update.
 
-        product = productRepository.save(product);
-        log.info("Product created with SKU: {}", product.getSku());
-        return productMapper.toDto(product);
-    }
+    product = productRepository.save(product);
+    log.info("Product updated with ID: {}", id);
+    return productMapper.toDto(product);
+  }
 
-    @Transactional
-    public ProductDto updateProduct(Long id, UpdateProductRequest request) {
-        Product product = getProductEntityById(id);
+  @Transactional
+  public void deleteProduct(Long id) {
+    Product product = getProductEntityById(id);
+    product.setDeleted(true);
+    productRepository.save(product);
+    log.info("Product soft-deleted with ID: {}", id);
+  }
 
-        productMapper.updateEntityFromDto(request, product);
-        
-        // If name changes, we could optionally update the slug, but usually slugs should remain stable for SEO.
-        // For now, we leave the slug unchanged during update.
+  // --- Private Helpers ---
 
-        product = productRepository.save(product);
-        log.info("Product updated with ID: {}", id);
-        return productMapper.toDto(product);
-    }
+  private Product getProductEntityById(Long id) {
+    return productRepository
+        .findById(id)
+        .filter(p -> !p.isDeleted())
+        .orElseThrow(() -> new BusinessException("Product not found", HttpStatus.NOT_FOUND));
+  }
 
-    @Transactional
-    public void deleteProduct(Long id) {
-        Product product = getProductEntityById(id);
-        product.setDeleted(true);
-        productRepository.save(product);
-        log.info("Product soft-deleted with ID: {}", id);
-    }
+  private Product getProductEntityBySlug(String slug) {
+    return productRepository
+        .findBySlugAndIsDeletedFalse(slug)
+        .orElseThrow(() -> new BusinessException("Product not found", HttpStatus.NOT_FOUND));
+  }
 
-    // --- Private Helpers ---
-
-    private Product getProductEntityById(Long id) {
-        return productRepository.findById(id)
-                .filter(p -> !p.isDeleted())
-                .orElseThrow(() -> new BusinessException("Product not found", HttpStatus.NOT_FOUND));
-    }
-
-    private Product getProductEntityBySlug(String slug) {
-        return productRepository.findBySlugAndIsDeletedFalse(slug)
-                .orElseThrow(() -> new BusinessException("Product not found", HttpStatus.NOT_FOUND));
-    }
-
-    private String generateSlug(String name) {
-        return name.toLowerCase(Locale.ENGLISH)
-                .replaceAll("[^a-z0-9\\s-]", "")
-                .replaceAll("\\s+", "-");
-    }
+  private String generateSlug(String name) {
+    return name.toLowerCase(Locale.ENGLISH).replaceAll("[^a-z0-9\\s-]", "").replaceAll("\\s+", "-");
+  }
 }

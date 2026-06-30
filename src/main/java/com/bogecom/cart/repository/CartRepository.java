@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
-    Optional<Cart> findByUserIdAndStatusAndIsDeletedFalse(Long userId, CartStatus status);
+  Optional<Cart> findByUserIdAndStatusAndIsDeletedFalse(Long userId, CartStatus status);
 
-    Optional<Cart> findBySessionIdAndStatusAndIsDeletedFalse(String sessionId, CartStatus status);
+  Optional<Cart> findBySessionIdAndStatusAndIsDeletedFalse(String sessionId, CartStatus status);
 }

@@ -25,20 +25,20 @@ import lombok.Setter;
 @Table(name = "product_images")
 public class ProductImage extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "product_id", nullable = false)
+  private Product product;
 
-    @Column(nullable = false, length = 500)
-    private String url;
+  @Column(nullable = false, length = 500)
+  private String url;
 
-    @Column(name = "is_primary", nullable = false)
-    private boolean isPrimary;
+  @Column(name = "is_primary", nullable = false)
+  private boolean isPrimary;
 
-    @Column(name = "sort_order", nullable = false)
-    private Integer sortOrder;
+  @Column(name = "sort_order", nullable = false)
+  private Integer sortOrder;
 }

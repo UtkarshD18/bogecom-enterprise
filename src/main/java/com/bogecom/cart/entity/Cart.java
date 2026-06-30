@@ -28,33 +28,33 @@ import lombok.Setter;
 @Table(name = "carts")
 public class Cart extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    // Optional user link for logged-in sessions
-    @Column(name = "user_id")
-    private Long userId;
+  // Optional user link for logged-in sessions
+  @Column(name = "user_id")
+  private Long userId;
 
-    // Session identifier for guest users
-    @Column(name = "session_id", length = 255)
-    private String sessionId;
+  // Session identifier for guest users
+  @Column(name = "session_id", length = 255)
+  private String sessionId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private CartStatus status;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 20)
+  private CartStatus status;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> items = new ArrayList<>();
+  @Builder.Default
+  @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<CartItem> items = new ArrayList<>();
 
-    public void addItem(CartItem item) {
-        items.add(item);
-        item.setCart(this);
-    }
+  public void addItem(CartItem item) {
+    items.add(item);
+    item.setCart(this);
+  }
 
-    public void removeItem(CartItem item) {
-        items.remove(item);
-        item.setCart(null);
-    }
+  public void removeItem(CartItem item) {
+    items.remove(item);
+    item.setCart(null);
+  }
 }

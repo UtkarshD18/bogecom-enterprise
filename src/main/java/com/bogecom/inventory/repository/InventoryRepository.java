@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
-    List<Inventory> findByProductIdAndIsDeletedFalse(Long productId);
+  List<Inventory> findByProductIdAndIsDeletedFalse(Long productId);
 
-    Optional<Inventory> findByProductIdAndLocationAndIsDeletedFalse(Long productId, String location);
-    
-    boolean existsByProductIdAndLocationAndIsDeletedFalse(Long productId, String location);
+  Optional<Inventory> findByProductIdAndLocationAndIsDeletedFalse(Long productId, String location);
+
+  boolean existsByProductIdAndLocationAndIsDeletedFalse(Long productId, String location);
 }

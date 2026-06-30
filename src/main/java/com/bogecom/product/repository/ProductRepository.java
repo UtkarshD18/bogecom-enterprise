@@ -7,13 +7,14 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
+public interface ProductRepository
+    extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
-    Optional<Product> findBySkuAndIsDeletedFalse(String sku);
+  Optional<Product> findBySkuAndIsDeletedFalse(String sku);
 
-    Optional<Product> findBySlugAndIsDeletedFalse(String slug);
+  Optional<Product> findBySlugAndIsDeletedFalse(String slug);
 
-    boolean existsBySkuAndIsDeletedFalse(String sku);
+  boolean existsBySkuAndIsDeletedFalse(String sku);
 
-    boolean existsBySlugAndIsDeletedFalse(String slug);
+  boolean existsBySlugAndIsDeletedFalse(String slug);
 }

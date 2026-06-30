@@ -24,41 +24,40 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CategoryController {
 
-    private final CategoryService categoryService;
+  private final CategoryService categoryService;
 
-    // --- Public Endpoints ---
+  // --- Public Endpoints ---
 
-    @GetMapping("/tree")
-    public ResponseEntity<ApiResponse<List<CategoryDto>>> getCategoryTree() {
-        return ResponseEntity.ok(ApiResponse.success(categoryService.getCategoryTree()));
-    }
+  @GetMapping("/tree")
+  public ResponseEntity<ApiResponse<List<CategoryDto>>> getCategoryTree() {
+    return ResponseEntity.ok(ApiResponse.success(categoryService.getCategoryTree()));
+  }
 
-    @GetMapping("/{slug}")
-    public ResponseEntity<ApiResponse<CategoryDto>> getCategoryBySlug(@PathVariable String slug) {
-        return ResponseEntity.ok(ApiResponse.success(categoryService.getCategoryBySlug(slug)));
-    }
+  @GetMapping("/{slug}")
+  public ResponseEntity<ApiResponse<CategoryDto>> getCategoryBySlug(@PathVariable String slug) {
+    return ResponseEntity.ok(ApiResponse.success(categoryService.getCategoryBySlug(slug)));
+  }
 
-    // --- Admin Endpoints ---
+  // --- Admin Endpoints ---
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<CategoryDto>> createCategory(
-            @Valid @RequestBody CreateCategoryRequest request) {
-        return ResponseEntity.ok(ApiResponse.success(categoryService.createCategory(request)));
-    }
+  @PostMapping
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<ApiResponse<CategoryDto>> createCategory(
+      @Valid @RequestBody CreateCategoryRequest request) {
+    return ResponseEntity.ok(ApiResponse.success(categoryService.createCategory(request)));
+  }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<CategoryDto>> updateCategory(
-            @PathVariable Long id,
-            @Valid @RequestBody UpdateCategoryRequest request) {
-        return ResponseEntity.ok(ApiResponse.success(categoryService.updateCategory(id, request)));
-    }
+  @PutMapping("/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<ApiResponse<CategoryDto>> updateCategory(
+      @PathVariable Long id, @Valid @RequestBody UpdateCategoryRequest request) {
+    return ResponseEntity.ok(ApiResponse.success(categoryService.updateCategory(id, request)));
+  }
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<Void>> deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
-        return ResponseEntity.ok(ApiResponse.success("Category deleted successfully", null));
-    }
+  @DeleteMapping("/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<ApiResponse<Void>> deleteCategory(@PathVariable Long id) {
+    categoryService.deleteCategory(id);
+    return ResponseEntity.ok(ApiResponse.success("Category deleted successfully", null));
+  }
 }

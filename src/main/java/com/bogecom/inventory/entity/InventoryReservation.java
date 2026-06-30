@@ -28,27 +28,27 @@ import lombok.Setter;
 @Table(name = "inventory_reservations")
 public class InventoryReservation extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "inventory_id", nullable = false)
-    private Inventory inventory;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "inventory_id", nullable = false)
+  private Inventory inventory;
 
-    @Column(name = "order_id")
-    private Long orderId;
+  @Column(name = "order_id")
+  private Long orderId;
 
-    @Column(name = "cart_id")
-    private Long cartId;
+  @Column(name = "cart_id")
+  private Long cartId;
 
-    @Column(nullable = false)
-    private Integer quantity;
+  @Column(nullable = false)
+  private Integer quantity;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private ReservationStatus status;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 20)
+  private ReservationStatus status;
 
-    @Column(name = "expires_at", nullable = false)
-    private LocalDateTime expiresAt;
+  @Column(name = "expires_at", nullable = false)
+  private LocalDateTime expiresAt;
 }

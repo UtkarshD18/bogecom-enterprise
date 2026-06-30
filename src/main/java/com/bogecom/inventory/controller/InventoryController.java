@@ -23,26 +23,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class InventoryController {
 
-    private final InventoryService inventoryService;
+  private final InventoryService inventoryService;
 
-    @GetMapping("/products/{productId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<List<InventoryDto>>> getInventoryForProduct(@PathVariable Long productId) {
-        return ResponseEntity.ok(ApiResponse.success(inventoryService.getInventoryForProduct(productId)));
-    }
+  @GetMapping("/products/{productId}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<ApiResponse<List<InventoryDto>>> getInventoryForProduct(
+      @PathVariable Long productId) {
+    return ResponseEntity.ok(
+        ApiResponse.success(inventoryService.getInventoryForProduct(productId)));
+  }
 
-    @PostMapping("/adjust")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<InventoryDto>> adjustInventory(
-            @Valid @RequestBody AdjustInventoryRequest request) {
-        return ResponseEntity.ok(ApiResponse.success(inventoryService.adjustInventory(request)));
-    }
+  @PostMapping("/adjust")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<ApiResponse<InventoryDto>> adjustInventory(
+      @Valid @RequestBody AdjustInventoryRequest request) {
+    return ResponseEntity.ok(ApiResponse.success(inventoryService.adjustInventory(request)));
+  }
 
-    // Usually reservations happen internally during checkout, but exposing an endpoint is good for microservice extraction
-    @PostMapping("/reserve")
-    @PreAuthorize("hasRole('CUSTOMER') or hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<InventoryReservationDto>> reserveInventory(
-            @Valid @RequestBody ReserveInventoryRequest request) {
-        return ResponseEntity.ok(ApiResponse.success(inventoryService.reserveInventory(request)));
-    }
+  // Usually reservations happen internally during checkout, but exposing an endpoint is good for
+  // microservice extraction
+  @PostMapping("/reserve")
+  @PreAuthorize("hasRole('CUSTOMER') or hasRole('ADMIN')")
+  public ResponseEntity<ApiResponse<InventoryReservationDto>> reserveInventory(
+      @Valid @RequestBody ReserveInventoryRequest request) {
+    return ResponseEntity.ok(ApiResponse.success(inventoryService.reserveInventory(request)));
+  }
 }

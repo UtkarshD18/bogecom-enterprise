@@ -29,49 +29,51 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc(addFilters = false)
 class InventoryControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-    @MockBean
-    private InventoryService inventoryService;
+  @MockBean private InventoryService inventoryService;
 
-    @MockBean
-    private JwtTokenProvider jwtTokenProvider;
+  @MockBean private JwtTokenProvider jwtTokenProvider;
 
-    @Test
-    void getInventoryForProduct_AsAdmin_ReturnsList() throws Exception {
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(1L, null, List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
-        
-        InventoryDto response = new InventoryDto(1L, 100L, "WAREHOUSE-A", 50, 5, 55);
+  @Test
+  void getInventoryForProduct_AsAdmin_ReturnsList() throws Exception {
+    UsernamePasswordAuthenticationToken auth =
+        new UsernamePasswordAuthenticationToken(
+            1L, null, List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
 
-        when(inventoryService.getInventoryForProduct(eq(100L))).thenReturn(List.of(response));
+    InventoryDto response = new InventoryDto(1L, 100L, "WAREHOUSE-A", 50, 5, 55);
 
-        mockMvc.perform(get("/api/v1/inventory/products/100")
-                .with(authentication(auth)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data[0].location").value("WAREHOUSE-A"));
-    }
+    when(inventoryService.getInventoryForProduct(eq(100L))).thenReturn(List.of(response));
 
-    @Test
-    void adjustInventory_AsAdmin_ReturnsAdjustedInventory() throws Exception {
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(1L, null, List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
-        
-        AdjustInventoryRequest request = new AdjustInventoryRequest(100L, "WAREHOUSE-B", 20);
-                
-        InventoryDto response = new InventoryDto(2L, 100L, "WAREHOUSE-B", 20, 0, 20);
+    mockMvc
+        .perform(get("/api/v1/inventory/products/100").with(authentication(auth)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.data[0].location").value("WAREHOUSE-A"));
+  }
 
-        when(inventoryService.adjustInventory(any(AdjustInventoryRequest.class))).thenReturn(response);
+  @Test
+  void adjustInventory_AsAdmin_ReturnsAdjustedInventory() throws Exception {
+    UsernamePasswordAuthenticationToken auth =
+        new UsernamePasswordAuthenticationToken(
+            1L, null, List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
 
-        mockMvc.perform(post("/api/v1/inventory/adjust")
+    AdjustInventoryRequest request = new AdjustInventoryRequest(100L, "WAREHOUSE-B", 20);
+
+    InventoryDto response = new InventoryDto(2L, 100L, "WAREHOUSE-B", 20, 0, 20);
+
+    when(inventoryService.adjustInventory(any(AdjustInventoryRequest.class))).thenReturn(response);
+
+    mockMvc
+        .perform(
+            post("/api/v1/inventory/adjust")
                 .with(authentication(auth))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.availableQuantity").value(20));
-    }
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.data.availableQuantity").value(20));
+  }
 }

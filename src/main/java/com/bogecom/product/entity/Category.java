@@ -29,38 +29,38 @@ import lombok.Setter;
 @Table(name = "categories")
 public class Category extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
+  @Column(nullable = false, length = 100)
+  private String name;
 
-    @Column(nullable = false, unique = true, length = 150)
-    private String slug;
+  @Column(nullable = false, unique = true, length = 150)
+  private String slug;
 
-    @Column(length = 500)
-    private String description;
+  @Column(length = 500)
+  private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private Category parent;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "parent_id")
+  private Category parent;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    private List<Category> subCategories = new ArrayList<>();
+  @Builder.Default
+  @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+  private List<Category> subCategories = new ArrayList<>();
 
-    @Builder.Default
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive = true;
+  @Builder.Default
+  @Column(name = "is_active", nullable = false)
+  private boolean isActive = true;
 
-    public void addSubCategory(Category child) {
-        subCategories.add(child);
-        child.setParent(this);
-    }
+  public void addSubCategory(Category child) {
+    subCategories.add(child);
+    child.setParent(this);
+  }
 
-    public void removeSubCategory(Category child) {
-        subCategories.remove(child);
-        child.setParent(null);
-    }
+  public void removeSubCategory(Category child) {
+    subCategories.remove(child);
+    child.setParent(null);
+  }
 }

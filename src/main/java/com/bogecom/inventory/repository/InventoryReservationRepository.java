@@ -10,9 +10,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InventoryReservationRepository extends JpaRepository<InventoryReservation, Long> {
 
-    List<InventoryReservation> findByOrderIdAndIsDeletedFalse(Long orderId);
+  List<InventoryReservation> findByOrderIdAndIsDeletedFalse(Long orderId);
 
-    List<InventoryReservation> findByCartIdAndIsDeletedFalse(Long cartId);
+  List<InventoryReservation> findByCartIdAndIsDeletedFalse(Long cartId);
 
-    List<InventoryReservation> findByStatusAndExpiresAtBeforeAndIsDeletedFalse(ReservationStatus status, LocalDateTime now);
+  List<InventoryReservation> findByStatusAndExpiresAtBeforeAndIsDeletedFalse(
+      ReservationStatus status, LocalDateTime now);
 }

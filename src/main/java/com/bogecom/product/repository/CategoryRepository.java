@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    Optional<Category> findBySlugAndIsDeletedFalse(String slug);
+  Optional<Category> findBySlugAndIsDeletedFalse(String slug);
 
-    boolean existsBySlugAndIsDeletedFalse(String slug);
-    
-    List<Category> findByParentIdIsNullAndIsDeletedFalse();
-    
-    List<Category> findByParentIdAndIsDeletedFalse(Long parentId);
+  boolean existsBySlugAndIsDeletedFalse(String slug);
+
+  List<Category> findByParentIdIsNullAndIsDeletedFalse();
+
+  List<Category> findByParentIdAndIsDeletedFalse(Long parentId);
 }

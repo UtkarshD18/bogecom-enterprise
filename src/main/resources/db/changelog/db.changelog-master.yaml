@@ -25,3 +25,7 @@ databaseChangeLog:
       file: classpath:/db/changelog/011-cart.xml
   - include:
       file: classpath:/db/changelog/012-cart-items.xml
+  - include:
+      file: classpath:/db/changelog/013-orders.xml
+  - include:
+      file: classpath:/db/changelog/014-order-items.xml

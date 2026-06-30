@@ -30,51 +30,51 @@ import lombok.Setter;
 @Table(name = "products")
 public class Product extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false, unique = true, length = 100)
-    private String sku;
+  @Column(nullable = false, unique = true, length = 100)
+  private String sku;
 
-    @Column(nullable = false, length = 255)
-    private String name;
+  @Column(nullable = false, length = 255)
+  private String name;
 
-    @Column(nullable = false, unique = true, length = 255)
-    private String slug;
+  @Column(nullable = false, unique = true, length = 255)
+  private String slug;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+  @Column(columnDefinition = "TEXT")
+  private String description;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+  @Column(nullable = false, precision = 10, scale = 2)
+  private BigDecimal price;
 
-    @Column(name = "sale_price", precision = 10, scale = 2)
-    private BigDecimal salePrice;
+  @Column(name = "sale_price", precision = 10, scale = 2)
+  private BigDecimal salePrice;
 
-    @Builder.Default
-    @Column(name = "stock_quantity", nullable = false)
-    private Integer stockQuantity = 0;
+  @Builder.Default
+  @Column(name = "stock_quantity", nullable = false)
+  private Integer stockQuantity = 0;
 
-    @Builder.Default
-    @Column(name = "is_published", nullable = false)
-    private boolean isPublished = false;
+  @Builder.Default
+  @Column(name = "is_published", nullable = false)
+  private boolean isPublished = false;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "category_id")
+  private Category category;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductImage> images = new ArrayList<>();
+  @Builder.Default
+  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<ProductImage> images = new ArrayList<>();
 
-    public void addImage(ProductImage image) {
-        images.add(image);
-        image.setProduct(this);
-    }
+  public void addImage(ProductImage image) {
+    images.add(image);
+    image.setProduct(this);
+  }
 
-    public void removeImage(ProductImage image) {
-        images.remove(image);
-        image.setProduct(null);
-    }
+  public void removeImage(ProductImage image) {
+    images.remove(image);
+    image.setProduct(null);
+  }
 }

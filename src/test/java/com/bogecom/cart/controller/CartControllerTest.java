@@ -1,7 +1,6 @@
 package com.bogecom.cart.controller;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
@@ -32,48 +31,51 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc(addFilters = false)
 class CartControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-    @MockBean
-    private CartService cartService;
+  @MockBean private CartService cartService;
 
-    @MockBean
-    private JwtTokenProvider jwtTokenProvider;
+  @MockBean private JwtTokenProvider jwtTokenProvider;
 
-    @Test
-    void getCart_AsUser_ReturnsCart() throws Exception {
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(1L, null, List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")));
-        
-        CartDto response = new CartDto(1L, 1L, null, CartStatus.ACTIVE, new ArrayList<>());
+  @Test
+  void getCart_AsUser_ReturnsCart() throws Exception {
+    UsernamePasswordAuthenticationToken auth =
+        new UsernamePasswordAuthenticationToken(
+            1L, null, List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")));
 
-        when(cartService.getCart(nullable(Long.class), nullable(String.class))).thenReturn(response);
+    CartDto response = new CartDto(1L, 1L, null, CartStatus.ACTIVE, new ArrayList<>());
 
-        mockMvc.perform(get("/api/v1/carts")
-                .with(authentication(auth)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.id").value(1L));
-    }
+    when(cartService.getCart(nullable(Long.class), nullable(String.class))).thenReturn(response);
 
-    @Test
-    void addToCart_AsUser_ReturnsUpdatedCart() throws Exception {
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(1L, null, List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")));
-        
-        AddToCartRequest request = new AddToCartRequest(100L, 2, null);
-                
-        CartDto response = new CartDto(1L, 1L, null, CartStatus.ACTIVE, new ArrayList<>());
+    mockMvc
+        .perform(get("/api/v1/carts").with(authentication(auth)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.data.id").value(1L));
+  }
 
-        when(cartService.addToCart(nullable(Long.class), any(AddToCartRequest.class))).thenReturn(response);
+  @Test
+  void addToCart_AsUser_ReturnsUpdatedCart() throws Exception {
+    UsernamePasswordAuthenticationToken auth =
+        new UsernamePasswordAuthenticationToken(
+            1L, null, List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER")));
 
-        mockMvc.perform(post("/api/v1/carts/items")
+    AddToCartRequest request = new AddToCartRequest(100L, 2, null);
+
+    CartDto response = new CartDto(1L, 1L, null, CartStatus.ACTIVE, new ArrayList<>());
+
+    when(cartService.addToCart(nullable(Long.class), any(AddToCartRequest.class)))
+        .thenReturn(response);
+
+    mockMvc
+        .perform(
+            post("/api/v1/carts/items")
                 .with(authentication(auth))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true));
-    }
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true));
+  }
 }

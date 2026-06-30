@@ -1,7 +1,6 @@
 package com.bogecom.product.controller;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,50 +33,73 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc(addFilters = false)
 class ProductControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-    @MockBean
-    private ProductService productService;
+  @MockBean private ProductService productService;
 
-    @MockBean
-    private JwtTokenProvider jwtTokenProvider;
+  @MockBean private JwtTokenProvider jwtTokenProvider;
 
-    @Test
-    void getProducts_ReturnsPageOfProducts() throws Exception {
-        ProductDto response = new ProductDto(1L, "SKU-123", "Laptop", "laptop-sku-123", "Gaming Laptop",
-                new BigDecimal("999.99"), null, 10, true, List.of());
-        Page<ProductDto> page = new PageImpl<>(List.of(response));
+  @Test
+  void getProducts_ReturnsPageOfProducts() throws Exception {
+    ProductDto response =
+        new ProductDto(
+            1L,
+            "SKU-123",
+            "Laptop",
+            "laptop-sku-123",
+            "Gaming Laptop",
+            new BigDecimal("999.99"),
+            null,
+            10,
+            true,
+            List.of());
+    Page<ProductDto> page = new PageImpl<>(List.of(response));
 
-        when(productService.getProducts(any(ProductSearchCriteria.class), any(Pageable.class))).thenReturn(page);
+    when(productService.getProducts(any(ProductSearchCriteria.class), any(Pageable.class)))
+        .thenReturn(page);
 
-        mockMvc.perform(get("/api/v1/products"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.content[0].sku").value("SKU-123"));
-    }
+    mockMvc
+        .perform(get("/api/v1/products"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.data.content[0].sku").value("SKU-123"));
+  }
 
-    @Test
-    void createProduct_AsAdmin_ReturnsCreatedProduct() throws Exception {
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(1L, null, List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
-        
-        CreateProductRequest request = new CreateProductRequest("SKU-123", "Laptop", "Gaming Laptop",
-                new BigDecimal("999.99"), null, 10, null);
-                
-        ProductDto response = new ProductDto(1L, "SKU-123", "Laptop", "laptop", "Gaming Laptop",
-                new BigDecimal("999.99"), null, 10, false, List.of());
+  @Test
+  void createProduct_AsAdmin_ReturnsCreatedProduct() throws Exception {
+    UsernamePasswordAuthenticationToken auth =
+        new UsernamePasswordAuthenticationToken(
+            1L, null, List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
 
-        when(productService.createProduct(any(CreateProductRequest.class))).thenReturn(response);
+    CreateProductRequest request =
+        new CreateProductRequest(
+            "SKU-123", "Laptop", "Gaming Laptop", new BigDecimal("999.99"), null, 10, null);
 
-        mockMvc.perform(post("/api/v1/products")
+    ProductDto response =
+        new ProductDto(
+            1L,
+            "SKU-123",
+            "Laptop",
+            "laptop",
+            "Gaming Laptop",
+            new BigDecimal("999.99"),
+            null,
+            10,
+            false,
+            List.of());
+
+    when(productService.createProduct(any(CreateProductRequest.class))).thenReturn(response);
+
+    mockMvc
+        .perform(
+            post("/api/v1/products")
                 .with(authentication(auth))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.id").value(1L));
-    }
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.data.id").value(1L));
+  }
 }

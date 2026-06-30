@@ -27,60 +27,59 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final ProductService productService;
+  private final ProductService productService;
 
-    // --- Public Catalog Endpoints ---
+  // --- Public Catalog Endpoints ---
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<Page<ProductDto>>> getProducts(
-            ProductSearchCriteria criteria,
-            @PageableDefault(size = 20) Pageable pageable) {
-        
-        // Ensure public users only see published products
-        ProductSearchCriteria safeCriteria = new ProductSearchCriteria(
-                criteria.keyword(),
-                criteria.minPrice(),
-                criteria.maxPrice(),
-                true // Force isPublished to true for public endpoint
-        );
-        
-        return ResponseEntity.ok(ApiResponse.success(productService.getProducts(safeCriteria, pageable)));
-    }
+  @GetMapping
+  public ResponseEntity<ApiResponse<Page<ProductDto>>> getProducts(
+      ProductSearchCriteria criteria, @PageableDefault(size = 20) Pageable pageable) {
 
-    @GetMapping("/{slug}")
-    public ResponseEntity<ApiResponse<ProductDto>> getProductBySlug(@PathVariable String slug) {
-        return ResponseEntity.ok(ApiResponse.success(productService.getProductBySlug(slug)));
-    }
+    // Ensure public users only see published products
+    ProductSearchCriteria safeCriteria =
+        new ProductSearchCriteria(
+            criteria.keyword(),
+            criteria.minPrice(),
+            criteria.maxPrice(),
+            true // Force isPublished to true for public endpoint
+            );
 
-    // --- Admin Endpoints ---
+    return ResponseEntity.ok(
+        ApiResponse.success(productService.getProducts(safeCriteria, pageable)));
+  }
 
-    @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<Page<ProductDto>>> adminGetProducts(
-            ProductSearchCriteria criteria,
-            @PageableDefault(size = 20) Pageable pageable) {
-        return ResponseEntity.ok(ApiResponse.success(productService.getProducts(criteria, pageable)));
-    }
+  @GetMapping("/{slug}")
+  public ResponseEntity<ApiResponse<ProductDto>> getProductBySlug(@PathVariable String slug) {
+    return ResponseEntity.ok(ApiResponse.success(productService.getProductBySlug(slug)));
+  }
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<ProductDto>> createProduct(
-            @Valid @RequestBody CreateProductRequest request) {
-        return ResponseEntity.ok(ApiResponse.success(productService.createProduct(request)));
-    }
+  // --- Admin Endpoints ---
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<ProductDto>> updateProduct(
-            @PathVariable Long id,
-            @Valid @RequestBody UpdateProductRequest request) {
-        return ResponseEntity.ok(ApiResponse.success(productService.updateProduct(id, request)));
-    }
+  @GetMapping("/admin")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<ApiResponse<Page<ProductDto>>> adminGetProducts(
+      ProductSearchCriteria criteria, @PageableDefault(size = 20) Pageable pageable) {
+    return ResponseEntity.ok(ApiResponse.success(productService.getProducts(criteria, pageable)));
+  }
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.ok(ApiResponse.success("Product deleted successfully", null));
-    }
+  @PostMapping
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<ApiResponse<ProductDto>> createProduct(
+      @Valid @RequestBody CreateProductRequest request) {
+    return ResponseEntity.ok(ApiResponse.success(productService.createProduct(request)));
+  }
+
+  @PutMapping("/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<ApiResponse<ProductDto>> updateProduct(
+      @PathVariable Long id, @Valid @RequestBody UpdateProductRequest request) {
+    return ResponseEntity.ok(ApiResponse.success(productService.updateProduct(id, request)));
+  }
+
+  @DeleteMapping("/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable Long id) {
+    productService.deleteProduct(id);
+    return ResponseEntity.ok(ApiResponse.success("Product deleted successfully", null));
+  }
 }
