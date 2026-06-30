@@ -9,3 +9,7 @@ databaseChangeLog:
       file: classpath:/db/changelog/003-user-profile.xml
   - include:
       file: classpath:/db/changelog/004-addresses.xml
+  - include:
+      file: classpath:/db/changelog/005-products.xml
+  - include:
+      file: classpath:/db/changelog/006-product-images.xml

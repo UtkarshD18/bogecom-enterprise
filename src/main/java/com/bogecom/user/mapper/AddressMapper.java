@@ -12,8 +12,10 @@ import org.mapstruct.MappingTarget;
     builder = @org.mapstruct.Builder(disableBuilder = true))
 public interface AddressMapper {
 
+  @Mapping(source = "default", target = "isDefault")
   AddressDto toDto(Address address);
 
+  @Mapping(source = "isDefault", target = "default")
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "user", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
@@ -26,6 +28,7 @@ public interface AddressMapper {
   @Mapping(target = "version", ignore = true)
   Address toEntity(AddressDto dto);
 
+  @Mapping(source = "isDefault", target = "default")
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "user", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
