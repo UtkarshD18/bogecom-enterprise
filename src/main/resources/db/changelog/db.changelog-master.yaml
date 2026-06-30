@@ -17,3 +17,7 @@ databaseChangeLog:
       file: classpath:/db/changelog/007-categories.xml
   - include:
       file: classpath:/db/changelog/008-product-category-link.xml
+  - include:
+      file: classpath:/db/changelog/009-inventory.xml
+  - include:
+      file: classpath:/db/changelog/010-inventory-reservations.xml
