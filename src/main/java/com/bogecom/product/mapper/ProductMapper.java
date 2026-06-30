@@ -38,6 +38,7 @@ public interface ProductMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "sku", ignore = true)
     @Mapping(target = "slug", ignore = true)
+    @Mapping(target = "category", ignore = true)
     @Mapping(target = "images", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
