@@ -21,3 +21,7 @@ databaseChangeLog:
       file: classpath:/db/changelog/009-inventory.xml
   - include:
       file: classpath:/db/changelog/010-inventory-reservations.xml
+  - include:
+      file: classpath:/db/changelog/011-cart.xml
+  - include:
+      file: classpath:/db/changelog/012-cart-items.xml
