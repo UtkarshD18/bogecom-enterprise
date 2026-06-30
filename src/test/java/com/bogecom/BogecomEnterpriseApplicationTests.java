@@ -13,12 +13,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ActiveProfiles("test")
 class BogecomEnterpriseApplicationTests {
 
-    @Container
-    @ServiceConnection
-    static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.4");
+  @Container @ServiceConnection static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.4");
 
-    @Test
-    void contextLoads() {
-        // Validates Spring Context and Liquibase Migrations load successfully against MySQL
-    }
+  @Test
+  void contextLoads() {
+    // Validates Spring Context and Liquibase Migrations load successfully against MySQL
+  }
 }

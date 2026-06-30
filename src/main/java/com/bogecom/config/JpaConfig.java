@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @Configuration
 @EnableJpaAuditing
 public class JpaConfig {
-    // Optionally define an AuditorAware bean here if we want to extract the currently authenticated user
+  // Optionally define an AuditorAware bean here if we want to extract the currently authenticated
+  // user
 }
