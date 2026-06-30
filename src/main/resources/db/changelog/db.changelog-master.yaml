@@ -31,3 +31,5 @@ databaseChangeLog:
       file: classpath:/db/changelog/014-order-items.xml
   - include:
       file: classpath:/db/changelog/015-shipping.xml
+  - include:
+      file: classpath:/db/changelog/016-coins.xml
