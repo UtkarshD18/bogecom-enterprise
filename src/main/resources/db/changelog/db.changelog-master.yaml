@@ -29,3 +29,5 @@ databaseChangeLog:
       file: classpath:/db/changelog/013-orders.xml
   - include:
       file: classpath:/db/changelog/014-order-items.xml
+  - include:
+      file: classpath:/db/changelog/015-shipping.xml
