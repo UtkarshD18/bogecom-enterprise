@@ -5,3 +5,7 @@ databaseChangeLog:
       file: classpath:/db/changelog/001-users.xml
   - include:
       file: classpath:/db/changelog/002-auth.xml
+  - include:
+      file: classpath:/db/changelog/003-user-profile.xml
+  - include:
+      file: classpath:/db/changelog/004-addresses.xml

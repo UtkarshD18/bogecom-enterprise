@@ -37,4 +37,18 @@ public class User extends BaseEntity {
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 50)
   private Role role;
+
+  @Column(name = "first_name", length = 100)
+  private String firstName;
+
+  @Column(name = "last_name", length = 100)
+  private String lastName;
+
+  @Column(length = 20)
+  private String phone;
+
+  @Builder.Default
+  @Enumerated(EnumType.STRING)
+  @Column(name = "account_status", nullable = false, length = 50)
+  private AccountStatus accountStatus = AccountStatus.ACTIVE;
 }
