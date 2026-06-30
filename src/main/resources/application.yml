@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: bogecom-enterprise
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  # Global Jackson Configurations
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: never
+    include-exception: false
+
+# Actuator Endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+# OpenAPI/Swagger Global Settings
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha

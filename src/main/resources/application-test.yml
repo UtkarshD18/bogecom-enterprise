@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    # URL will be dynamically provided by Testcontainers (@ServiceConnection)
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+app:
+  security:
+    jwt:
+      secret: 8f0b7e4d89a24c58b1a3d9f2e4c8g7d6b5f4a3e2d1c0b9a8f7e6d5c4b3a2f1
+      access-token-expiration-ms: 900000
+      refresh-token-expiration-ms: 604800000
+    cookie:
+      secure: false
